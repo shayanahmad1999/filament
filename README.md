@@ -95,6 +95,16 @@ php artisan make:filament-user
 give credentials and sign in
 ```
 
+7. Generate Filament Resourse through Commant
+```bash
+php artisan make:filament-resource ModelName
+
+Like
+
+php artisan make:filament-resource Country
+
+```
+
 ### For more guideline please read the below link
 ```bash
 1. https://filamentphp.com/docs/3.x/panels/installation
