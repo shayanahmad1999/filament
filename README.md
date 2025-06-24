@@ -87,3 +87,19 @@ url look like http://localhost:8000
 then in url type like below and hit enter
 http://localhost:8000/admin
 ```
+
+6. Create user
+```bash
+php artisan make:filament-user
+
+give credentials and sign in
+```
+
+### For more guideline please read the below link
+```bash
+1. https://filamentphp.com/docs/3.x/panels/installation
+
+2. https://youtube.com/playlist?list=PL6tf8fRbavl3jfL67gVOE9rF0jG5bNTMi&si=4rM8ZNU5APuxfBz5
+
+3. https://github.com/filamentphp/filament
+```
