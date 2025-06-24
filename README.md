@@ -97,11 +97,20 @@ give credentials and sign in
 
 7. Generate Filament Resourse through Commant
 ```bash
+# Generate Simple view
 php artisan make:filament-resource ModelName
+
+# Generate view with table and form
+php artisan make:filament-resource ModelName --generate
+
+# Generate view with table, form and view
+php artisan make:filament-resource ModelName --generate --view
 
 Like
 
 php artisan make:filament-resource Country
+php artisan make:filament-resource State --generate
+php artisan make:filament-resource City --generate --view
 
 ```
 
