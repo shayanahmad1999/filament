@@ -10,7 +10,7 @@ class Employee extends Model
 {
     use HasFactory;
 
-    protected $gaurded = [];
+    protected $guarded = [];
 
     public function country(): BelongsTo
     {
