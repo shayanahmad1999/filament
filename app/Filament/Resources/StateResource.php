@@ -51,13 +51,14 @@ class StateResource extends Resource
                 Tables\Columns\TextColumn::make('country.name')
                     ->numeric()
                     ->sortable()
-                    ->searchable(isIndividual: true, isGlobal: false),
+                    // ->searchable(isIndividual: true, isGlobal: false),
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('name')
                     ->label('State name')
                     ->sortable()
                     ->searchable(),
-                    // ->hidden(!auth()->user()->name === 'admin'),
-                    // ->visible(auth()->user()->name === 'admin'),
+                // ->hidden(!auth()->user()->name === 'admin'),
+                // ->visible(auth()->user()->name === 'admin'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -71,6 +72,7 @@ class StateResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
