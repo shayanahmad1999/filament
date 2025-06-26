@@ -6,6 +6,7 @@ use App\Filament\Resources\CityResource\Pages;
 use App\Filament\Resources\CityResource\RelationManagers;
 use App\Filament\Resources\CityResource\RelationManagers\EmployeesRelationManager;
 use App\Models\City;
+use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Infolists\Components\Section;
@@ -38,7 +39,11 @@ class CityResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Select::make('state_id')
-                    ->relationship(name: 'state', titleAttribute: 'name')
+                    ->relationship(
+                        name: 'state',
+                        titleAttribute: 'name',
+                        modifyQueryUsing: fn(Builder $query) => $query->whereBelongsTo(Filament::getTenant())
+                    )
                     ->searchable()
                     ->preload()
                     ->required(),

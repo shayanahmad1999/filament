@@ -7,6 +7,7 @@ use App\Filament\Resources\StateResource\RelationManagers;
 use App\Filament\Resources\StateResource\RelationManagers\CitiesRelationManager;
 use App\Filament\Resources\StateResource\RelationManagers\EmployeesRelationManager;
 use App\Models\State;
+use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Infolists\Components\Section;
@@ -39,7 +40,11 @@ class StateResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Select::make('country_id')
-                    ->relationship(name: 'country', titleAttribute: 'name')
+                    ->relationship(
+                        name: 'country',
+                        titleAttribute: 'name',
+                        modifyQueryUsing: fn(Builder $query) => $query->whereBelongsTo(Filament::getTenant())
+                    )
                     ->searchable()
                     ->preload()
                     ->required(),

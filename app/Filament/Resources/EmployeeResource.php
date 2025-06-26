@@ -9,6 +9,7 @@ use App\Models\Country;
 use App\Models\Employee;
 use App\Models\State;
 use Carbon\Carbon;
+use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
@@ -79,7 +80,11 @@ class EmployeeResource extends Resource
                 Forms\Components\Section::make('Relationships')
                     ->schema([
                         Forms\Components\Select::make('country_id')
-                            ->relationship(name: 'country', titleAttribute: 'name')
+                            ->relationship(
+                                name: 'country',
+                                titleAttribute: 'name',
+                                modifyQueryUsing: fn(Builder $query) => $query->whereBelongsTo(Filament::getTenant())
+                            )
                             ->searchable()
                             ->preload()
                             ->live()
@@ -106,7 +111,11 @@ class EmployeeResource extends Resource
                             ->live()
                             ->required(),
                         Forms\Components\Select::make('department_id')
-                            ->relationship(name: 'department', titleAttribute: 'name')
+                            ->relationship(
+                                name: 'department',
+                                titleAttribute: 'name',
+                                modifyQueryUsing: fn(Builder $query) => $query->whereBelongsTo(Filament::getTenant())
+                            )
                             ->searchable()
                             ->preload()
                             ->required(),
