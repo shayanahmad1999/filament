@@ -42,7 +42,6 @@ class CityResource extends Resource
                     ->relationship(
                         name: 'state',
                         titleAttribute: 'name',
-                        modifyQueryUsing: fn(Builder $query) => $query->whereBelongsTo(Filament::getTenant())
                     )
                     ->searchable()
                     ->preload()

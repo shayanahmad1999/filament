@@ -53,6 +53,10 @@ php artisan db:seed
 
 ```bash
 php artisan serve
+
+url look like http://localhost:8000
+then in url type like below and hit enter
+http://localhost:8000/app
 ```
 
 ### OR install filament step by step guide
