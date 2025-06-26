@@ -4,11 +4,14 @@ namespace App\Filament\App\Resources;
 
 use App\Filament\App\Resources\DepartmentResource\Pages;
 use App\Filament\App\Resources\DepartmentResource\RelationManagers;
+use App\Filament\Imports\DepartmentImporter;
 use App\Models\Department;
+use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\ImportAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -51,6 +54,14 @@ class DepartmentResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+            ])
+            ->headerActions([
+                ImportAction::make()
+                    ->color('info')
+                    ->importer(DepartmentImporter::class)
+                    ->options([
+                        'team_id' => Filament::getTenant()?->id
+                    ])
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

@@ -2,43 +2,44 @@
 
 namespace App\Filament\Imports;
 
-use App\Models\State;
+use App\Models\Department;
 use Filament\Actions\Imports\ImportColumn;
 use Filament\Actions\Imports\Importer;
 use Filament\Actions\Imports\Models\Import;
 
-class StateImporter extends Importer
+class DepartmentImporter extends Importer
 {
-    protected static ?string $model = State::class;
+    protected static ?string $model = Department::class;
 
     public static function getColumns(): array
     {
         return [
-            // ImportColumn::make('team')
+            // ImportColumn::make('team_id')
             //     ->requiredMapping()
-            //     ->rules(['required']),
-            ImportColumn::make('country')
-                ->relationship(resolveUsing: 'name')
-                ->rules(['required']),
+            //     ->numeric()
+            //     ->rules(['required', 'integer']),
             ImportColumn::make('name')
                 ->requiredMapping()
                 ->rules(['required', 'max:255']),
         ];
     }
 
-    public function resolveRecord(): ?State
+    public function resolveRecord(): ?Department
     {
-        return State::firstOrNew([
+        $team_id = $this->options['team_id'];
+        $department = Department::firstOrNew([
             'name' => $this->data['name'],
-            'country_id' => $this->data['country'],
+            'team_id' => $team_id,
         ]);
 
-        return new State();
+        $department->team_id = $team_id;
+
+        return $department;
     }
 
     public static function getCompletedNotificationBody(Import $import): string
     {
-        $body = 'Your state import has completed and ' . number_format($import->successful_rows) . ' ' . str('row')->plural($import->successful_rows) . ' imported.';
+        $body = 'Your department import has completed and ' . number_format($import->successful_rows) . ' ' . str('row')->plural($import->successful_rows) . ' imported.';
 
         if ($failedRowsCount = $import->getFailedRowsCount()) {
             $body .= ' ' . number_format($failedRowsCount) . ' ' . str('row')->plural($failedRowsCount) . ' failed to import.';
