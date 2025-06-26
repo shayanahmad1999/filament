@@ -43,7 +43,6 @@ class StateResource extends Resource
                     ->relationship(
                         name: 'country',
                         titleAttribute: 'name',
-                        modifyQueryUsing: fn(Builder $query) => $query->whereBelongsTo(Filament::getTenant())
                     )
                     ->searchable()
                     ->preload()
