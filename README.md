@@ -59,6 +59,68 @@ then in url type like below and hit enter
 http://localhost:8000/app
 ```
 
+### Export and Import
+
+##Export
+
+1. Laravel 11 and higher
+
+```bash
+php artisan make:queue-batches-table
+php artisan make:notifications-table
+```
+
+2. All apps
+
+```bash
+php artisan vendor:publish --tag=filament-actions-migrations
+php artisan migrate
+```
+
+3.a. Make Export file
+
+```bash
+php artisan make:filament-exporter ModelName --generate
+Like
+php artisan make:filament-exporter State --generate
+```
+
+3.b. Make Import file
+
+```bash
+php artisan make:filament-importer ModelName --generate
+Like
+php artisan make:filament-importer State --generate
+```
+
+4. Add to Resoucefile(StateResource.php) under actions in the $table
+
+```bash
+use App\Filament\Exports\StateExporter;
+use Filament\Tables\Actions\ExportAction;
+
+use App\Filament\Imports\StateImporter;
+use Filament\Tables\Actions\ImportAction;
+
+ExportAction::make()
+    ->exporter(StateExporter::class),
+
+ImportAction::make()
+    ->importer(StateExporter::class)
+```
+
+5. Add to AdminPanelProvider under middleware
+
+```bash
+->databaseNotifications()
+```
+
+6. Start queue
+
+```bash
+php artisan queue:listen
+```
+
 ### OR install filament step by step guide
 
 1. Install Laravel
