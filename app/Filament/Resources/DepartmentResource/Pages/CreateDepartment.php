@@ -9,4 +9,10 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateDepartment extends CreateRecord
 {
     protected static string $resource = DepartmentResource::class;
+
+    // protected function mutateFormDataBeforeCreate(array $data): array
+    // {
+    //     $data['team_id'] = 1;
+    //     return $data;
+    // }
 }

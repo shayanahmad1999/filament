@@ -50,6 +50,16 @@ class DepartmentResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
+
+                Forms\Components\Select::make('team_id')
+                    ->relationship(
+                        name: 'team',
+                        titleAttribute: 'name'
+                    )
+                    ->searchable()
+                    ->preload()
+                    ->live()
+                    ->required(),
             ]);
     }
 
