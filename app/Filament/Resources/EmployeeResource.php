@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\EmployeeResource\Pages;
 use App\Filament\Resources\EmployeeResource\RelationManagers;
+use App\Filament\Resources\EmployeeResource\RelationManagers\FilesRelationManager;
 use App\Models\City;
 use App\Models\Country;
 use App\Models\Employee;
@@ -12,6 +13,8 @@ use Carbon\Carbon;
 use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
@@ -151,12 +154,43 @@ class EmployeeResource extends Resource
                             ->displayFormat('d/m/Y')
                             ->required(),
                     ])->columns(2),
+
+                Forms\Components\Select::make('team_id')
+                    ->relationship(
+                        name: 'team',
+                        titleAttribute: 'name'
+                    )
+                    ->searchable()
+                    ->preload()
+                    ->live()
+                    ->required(),
+
+                Forms\Components\Section::make('Employee File Uploads')
+                    ->schema([
+                        Repeater::make('files') // ← refers to Employee::files()
+                            ->relationship()
+                            ->schema([
+                                FileUpload::make('file_path')
+                                    ->label('Upload File')
+                                    ->directory('file/employee')
+                                    ->visibility('public')
+                                    ->storeFileNamesIn('file_name') // optional: only if column exists
+                                    ->required(),
+                            ])
+                            ->label('Multiple Files')
+                            ->createItemButtonLabel('Add File')
+                            ->collapsible()
+                            ->reorderable(false),
+                    ]),
             ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
+            ->heading('Employees')
+            ->description('Manage your employees here.')
+            ->reorderable('sort')
             ->columns([
                 Tables\Columns\TextColumn::make('country.name')
                     ->searchable()
@@ -303,7 +337,7 @@ class EmployeeResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            FilesRelationManager::class
         ];
     }
 

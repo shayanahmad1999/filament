@@ -48,6 +48,16 @@ class CountryResource extends Resource
                     ->required()
                     ->numeric()
                     ->maxLength(5),
+
+                Forms\Components\Select::make('team_id')
+                    ->relationship(
+                        name: 'team',
+                        titleAttribute: 'name'
+                    )
+                    ->searchable()
+                    ->preload()
+                    ->live()
+                    ->required(),
             ])->columns(3);
     }
 
