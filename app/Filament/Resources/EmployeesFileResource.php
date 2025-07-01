@@ -4,15 +4,19 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\EmployeesFileResource\Pages;
 use App\Filament\Resources\EmployeesFileResource\RelationManagers;
+use App\Models\Employee;
 use App\Models\EmployeesFile;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use ZipArchive;
@@ -31,16 +35,24 @@ class EmployeesFileResource extends Resource
             ->schema([
                 Forms\Components\Section::make('Employee Info')
                     ->schema([
-                        Forms\Components\Select::make('employee_id')
+                        Forms\Components\Select::make('team_id')
                             ->relationship(
-                                name: 'employee',
-                                titleAttribute: 'first_name'
+                                name: 'team',
+                                titleAttribute: 'name'
                             )
                             ->searchable()
                             ->preload()
                             ->live()
                             ->required(),
-                    ]),
+                        Forms\Components\Select::make('employee_id')
+                            ->options(fn(Get $get): Collection => Employee::query()
+                                ->where('team_id', $get('team_id'))
+                                ->pluck('first_name', 'id'))
+                            ->searchable()
+                            ->preload()
+                            ->live()
+                            ->required(),
+                    ])->columns(2),
                 Forms\Components\Section::make('Image Uploads')
                     ->schema([
                         FileUpload::make('file_path')
