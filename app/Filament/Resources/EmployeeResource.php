@@ -7,6 +7,7 @@ use App\Filament\Resources\EmployeeResource\RelationManagers;
 use App\Filament\Resources\EmployeeResource\RelationManagers\FilesRelationManager;
 use App\Models\City;
 use App\Models\Country;
+use App\Models\Department;
 use App\Models\Employee;
 use App\Models\State;
 use Carbon\Carbon;
@@ -112,15 +113,23 @@ class EmployeeResource extends Resource
                             ->preload()
                             ->live()
                             ->required(),
-                        Forms\Components\Select::make('department_id')
+                        Forms\Components\Select::make('team_id')
                             ->relationship(
-                                name: 'department',
-                                titleAttribute: 'name',
+                                name: 'team',
+                                titleAttribute: 'name'
                             )
                             ->searchable()
                             ->preload()
+                            ->live()
                             ->required(),
-                    ])->columns(2),
+                        Forms\Components\Select::make('department_id')
+                            ->options(fn(Get $get): Collection => Department::query()
+                                ->where('team_id', $get('team_id'))
+                                ->pluck('name', 'id'))
+                            ->searchable()
+                            ->preload()
+                            ->required(),
+                    ])->columns(3),
                 Forms\Components\Section::make('User Name')
                     ->description('Put the user name details in.')
                     ->schema([
@@ -154,16 +163,6 @@ class EmployeeResource extends Resource
                             ->displayFormat('d/m/Y')
                             ->required(),
                     ])->columns(2),
-
-                Forms\Components\Select::make('team_id')
-                    ->relationship(
-                        name: 'team',
-                        titleAttribute: 'name'
-                    )
-                    ->searchable()
-                    ->preload()
-                    ->live()
-                    ->required(),
 
                 Forms\Components\Section::make('Employee File Uploads')
                     ->schema([

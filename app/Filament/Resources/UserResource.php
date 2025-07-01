@@ -21,6 +21,8 @@ class UserResource extends Resource
 
     protected static ?string $navigationGroup = 'User Management';
 
+    public static ?string $tenantRelationshipName = 'members';
+
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
@@ -58,6 +60,15 @@ class UserResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
+                Tables\Columns\ToggleColumn::make('is_admin')
+                    ->label('Admin')
+                    ->sortable()
+                    ->afterStateUpdated(function ($record, $state) {
+                        if (auth()->user()->can('update', $record)) {
+                            $record->is_admin = $state;
+                            $record->save();
+                        }
+                    }),
                 Tables\Columns\TextColumn::make('email_verified_at')
                     ->dateTime()
                     ->sortable(),
