@@ -204,3 +204,153 @@ php artisan make:filament-resource City --generate --view
 
 4. https://laracasts.com/series?topics%5B0%5D=filament
 ```
+
+### install shield for spatie role and permission
+
+#1. Install Package
+
+```bash
+composer require bezhansalleh/filament-shield
+```
+
+#2. Configure Auth Provider
+#2.1. Publish the config and setup your auth provider model.
+
+```bash
+php artisan vendor:publish --tag="filament-shield-config"
+```
+
+#2.2 Add the HasRoles trait to your auth provider model:
+
+```bash
+use Spatie\Permission\Traits\HasRoles;
+
+class User extends Authenticatable
+{
+    use HasRoles;
+}
+```
+
+#3. Setup Shield
+
+```bash
+3.1 Without Tenancy:
+php artisan shield:setup
+```
+
+3.2 With Tenancy:
+
+```bash
+php artisan shield:setup --tenant=App\\Models\\Team
+# Replace Team with your tenant model
+```
+
+#4. Install for Panel
+
+```bash
+4.1 Without Tenancy
+php artisan shield:install admin
+# Replace 'admin' with your panel
+Or instead of the above command you can register the plugin manually in your xPanelProvider:
+->plugins([
+    \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
+])
+```
+
+4.2 With Tenancy:
+
+```bash
+php artisan shield:install admin --tenant --generate-relationships
+# Replace 'admin' with your panel ID
+
+Or instead of the above command you can register the plugin and enable tenancy manually in your xPanelProvider:
+->tenant(YourTenantModel::class)
+->tenantMiddleware([
+    \BezhanSalleh\FilamentShield\Middleware\SyncShieldTenant::class,
+], isPersistent: true)
+->plugins([
+    \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
+])
+```
+
+#Usage
+
+#Users (Assigning Roles to Users)
+
+1. Without Tenancy
+
+```bash
+
+// Using Select Component
+Forms\Components\Select::make('roles')
+    ->relationship('roles', 'name')
+    ->multiple()
+    ->preload()
+    ->searchable(),
+
+// Using CheckboxList Component
+Forms\Components\CheckboxList::make('roles')
+    ->relationship('roles', 'name')
+    ->searchable(),
+```
+
+2. With Tenancy
+
+```bash
+// Using Select Component
+Forms\Components\Select::make('roles')
+      ->relationship('roles', 'name')
+      ->saveRelationshipsUsing(function (Model $record, $state) {
+           $record->roles()->syncWithPivotValues($state, [config('permission.column_names.team_foreign_key') => getPermissionsTeamId()]);
+      })
+     ->multiple()
+     ->preload()
+     ->searchable(),
+
+// Using CheckboxList Component
+Forms\Components\CheckboxList::make('roles')
+      ->relationship(name: 'roles', titleAttribute: 'name')
+      ->saveRelationshipsUsing(function (Model $record, $state) {
+           $record->roles()->syncWithPivotValues($state, [config('permission.column_names.team_foreign_key') => getPermissionsTeamId()]);
+      })
+     ->searchable(),
+```
+
+#Core Commands
+
+# Setup Shield
+
+```bash
+php artisan shield:setup [--tenant=]
+e.g
+php artisan shield:setup --tenant=Team
+
+# Install Shield for a panel
+
+php artisan shield:install {panel} [--tenant]
+e.g
+php artisan shield:install admin --tenant
+
+# Generate permissions/policies
+
+php artisan shield:generate --all
+
+# Create super admin
+
+php artisan shield:super-admin [--user=] [--panel=] [--tenant=]
+e.g
+php artisan shield:super-admin --user=1 --panel=admin --tenant=1
+
+# Publish Role Resource
+
+php artisan shield:publish {panel}
+e.g
+php artisan shield:publish admin
+
+```
+
+### Or Read the below link in details
+
+```bash
+https://filamentphp.com/plugins/bezhansalleh-shield
+```
